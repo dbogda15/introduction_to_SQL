@@ -72,3 +72,45 @@ FROM employee
 GROUP BY first_name
 HAVING COUNT(first_name) > 1
 ORDER BY MAX(age);
+
+CREATE TABLE city (
+    city_id BIGSERIAL NOT NULL PRIMARY KEY,
+    city_name VARCHAR(20) NOT NULL
+);
+
+ALTER TABLE employee
+ADD city_id INT;
+
+ALTER TABLE employee
+ADD FOREIGN KEY (city_id)  REFERENCES city (city_id);
+
+INSERT INTO city (city_name)
+VALUES ('Moscow'), ('Ufa'), ('Kazan'), ('Sochi'), ('Saratov'), ('Samara');
+
+UPDATE employee SET city_id = 6 WHERE id = 1;
+UPDATE employee SET city_id = 5 WHERE id = 3;
+UPDATE employee SET city_id = 4 WHERE id = 4;
+UPDATE employee SET city_id = 3 WHERE id = 5;
+UPDATE employee SET city_id = 2 WHERE id = 6;
+
+SELECT first_name, last_name, city_name
+FROM city
+INNER JOIN employee
+ON city.city_id = employee.city_id;
+
+SELECT first_name, last_name, city_name
+FROM city
+LEFT JOIN employee
+ON city.city_id = employee.city_id;
+
+INSERT INTO employee (first_name, last_name, gender, age)
+VALUES ('Alena', 'Petrova', 'female', 50);
+
+SELECT first_name, last_name, city_name
+FROM city
+FULL JOIN employee
+ON city.city_id = employee.city_id;
+
+SELECT first_name, city_name
+FROM city
+CROSS JOIN employee;
